@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 const app=express();
 const port=process.env.PORT || 3030;
-// const port=3000;
+//const port=3000;
 // var todo=[];
 // var work=[];
 function connectToDatabase() {
@@ -60,11 +60,14 @@ app.get("/",(req,res)=>{
     async function fetchData() {
         try {
               const taskslist = await Task.find({});
+              const lists = await List.find({});
+              // console.log(taskslist);
+              // console.log(lists);
               if(taskslist.length===0){
                 insertMany();
               }
             //   console.log(taskslist);
-              res.render("index.ejs",{list1:taskslist,html1:"Today"});
+              res.render("index.ejs",{list1:taskslist,html1:"Today",lists:lists});
             }
         catch (error) {
                 console.error(error);
@@ -141,6 +144,7 @@ app.get("/:customlist",(req,res)=>{
        
        try {
         const found=await List.findOne({name:listname});
+        const lists = await List.find({});
         if(!found){
           const list1 =new List({
             name:listname,
@@ -151,7 +155,7 @@ app.get("/:customlist",(req,res)=>{
           res.redirect("/"+listname);
         }
         else{
-          res.render("index.ejs",{list1:found.tasks,html1:found.name});
+          res.render("index.ejs",{list1:found.tasks,html1:found.name,lists:lists});
           //  console.log("exists");
         }
       }
